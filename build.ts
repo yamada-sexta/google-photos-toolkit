@@ -39,6 +39,7 @@ async function buildOnce({ banner }: { banner: string }) {
         define: {
             __VERSION__: JSON.stringify(pkg.version),
             __HOMEPAGE__: JSON.stringify(pkg.homepage),
+            __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
         },
         loader: {
             '.html': 'text',
