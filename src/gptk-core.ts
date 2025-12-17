@@ -8,7 +8,7 @@ import { apiSettingsDefault } from './api/api-utils-default-presets';
 export type Source = 'library' | 'search' | 'trash' | 'lockedFolder' | 'favorites' | 'sharedLinks' | 'albums';
 
 export type MediaItem = any;
-export type Filter = any;
+// export type Filter = any;
 export type Action = any;
 export type ApiSettings = typeof apiSettingsDefault;
 
@@ -18,6 +18,36 @@ interface ExecuteActionParams {
   targetAlbum?: any;
   newTargetAlbumName?: string;
   preserveOrder?: boolean;
+}
+
+export type StringBool = 'true' | 'false';
+
+export interface Filter {
+  lowerBoundaryDate: string;
+  higherBoundaryDate: string;
+  dateType: 'taken' | 'uploaded';
+  intervalType: 'include' | 'exclude';
+  albumsInclude?: string[] | string;
+  albumsExclude: string[];
+  excludeShared?: boolean;
+  owned?: StringBool;
+  uploadStatus?: 'full' | 'partial' | 'failed';
+  archived?: StringBool;
+  favorite?: StringBool;
+  excludeFavorites?: boolean;
+  type?: 'video' | 'image' | 'live';
+  space?: 'consuming' | 'non-consuming';
+  quality?: 'original' | 'storage-saver';
+  fileNameMatchType?: 'include' | 'exclude';
+  lowerBoundarySize: string;
+  higherBoundarySize: string;
+  fileNameRegex: string;
+  descriptionRegex: string;
+  descriptionMatchType?: 'include' | 'exclude';
+  sortBySize?: boolean;
+  similarityThreshold: number;
+  searchQuery: string;
+  imageHeight: number;
 }
 
 export default class Core {
@@ -422,7 +452,7 @@ export default class Core {
     if (action.elementId === 'unLock' || source === 'lockedFolder') await this.apiUtils.removeFromLockedFolder(mediaItems);
     if (action.elementId === 'lock') await this.apiUtils.moveToLockedFolder(mediaItems);
     if (action.elementId === 'toExistingAlbum') await this.apiUtils.addToExistingAlbum(mediaItems, targetAlbum, preserveOrder);
-    if (action.elementId === 'toNewAlbum') await this.apiUtils.addToNewAlbum(mediaItems, newTargetAlbumName||"New Album", preserveOrder);
+    if (action.elementId === 'toNewAlbum') await this.apiUtils.addToNewAlbum(mediaItems, newTargetAlbumName || "New Album", preserveOrder);
     if (action.elementId === 'toTrash') await this.apiUtils.moveToTrash(mediaItems);
     if (action.elementId === 'toArchive') await this.apiUtils.sendToArchive(mediaItems);
     if (action.elementId === 'unArchive') await this.apiUtils.unArchive(mediaItems);

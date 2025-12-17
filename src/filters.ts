@@ -1,7 +1,9 @@
+import type Core from './gptk-core';
+import type { Filter, MediaItem } from './gptk-core';
 import log from './ui/logic/log';
 import { defer } from './utils/helpers';
 
-export function fileNameFilter(mediaItems, filter) {
+export function fileNameFilter(mediaItems: MediaItem[], filter: Filter) {
   log('Filtering by filename');
   const regex = new RegExp(filter.fileNameRegex);
   if (filter?.fileNameMatchType === 'include') mediaItems = mediaItems.filter((item) => regex.test(item.fileName));
@@ -10,7 +12,7 @@ export function fileNameFilter(mediaItems, filter) {
   return mediaItems;
 }
 
-export function descriptionFilter(mediaItems, filter) {
+export function descriptionFilter(mediaItems: MediaItem[], filter: Filter) {
   log('Filtering by description');
   const regex = new RegExp(filter.descriptionRegex);
   if (filter?.descriptionMatchType === 'include') mediaItems = mediaItems.filter((item) => regex.test(item.descriptionFull));
@@ -19,7 +21,7 @@ export function descriptionFilter(mediaItems, filter) {
   return mediaItems;
 }
 
-export function sizeFilter(mediaItems, filter) {
+export function sizeFilter(mediaItems: MediaItem[], filter: Filter) {
   log('Filtering by size');
   if (parseInt(filter?.higherBoundarySize) > 0) mediaItems = mediaItems.filter((item) => item.size < filter.higherBoundarySize);
   if (parseInt(filter?.lowerBoundarySize) > 0) mediaItems = mediaItems.filter((item) => item.size > filter.lowerBoundarySize);
@@ -27,7 +29,7 @@ export function sizeFilter(mediaItems, filter) {
   return mediaItems;
 }
 
-export function qualityFilter(mediaItems, filter) {
+export function qualityFilter(mediaItems: MediaItem[], filter: Filter) {
   log('Filtering by quality');
   if (filter.quality == 'original') mediaItems = mediaItems.filter((item) => item.isOriginalQuality);
   else if (filter.quality == 'storage-saver') mediaItems = mediaItems.filter((item) => !item.isOriginalQuality);
@@ -35,7 +37,7 @@ export function qualityFilter(mediaItems, filter) {
   return mediaItems;
 }
 
-export function spaceFilter(mediaItems, filter) {
+export function spaceFilter(mediaItems: MediaItem[], filter: Filter) {
   log('Filtering by space');
   if (filter.space === 'consuming') mediaItems = mediaItems.filter((item) => item.takesUpSpace);
   else if (filter.space === 'non-consuming') mediaItems = mediaItems.filter((item) => !item.takesUpSpace);
@@ -43,7 +45,7 @@ export function spaceFilter(mediaItems, filter) {
   return mediaItems;
 }
 
-export function filterByDate(mediaItems, filter) {
+export function filterByDate(mediaItems: MediaItem[], filter: Filter) {
   log('Filtering by date');
   let lowerBoundaryDate = new Date(filter.lowerBoundaryDate).getTime();
   let higherBoundaryDate = new Date(filter.higherBoundaryDate).getTime();
@@ -68,7 +70,7 @@ export function filterByDate(mediaItems, filter) {
   return mediaItems;
 }
 
-export function filterByMediaType(mediaItems, filter) {
+export function filterByMediaType(mediaItems: MediaItem[], filter: Filter) {
   // if has duration - video, else image
   log('Filtering by media type');
   if (filter.type === 'video') mediaItems = mediaItems.filter((item) => item.duration);
@@ -78,7 +80,7 @@ export function filterByMediaType(mediaItems, filter) {
   return mediaItems;
 }
 
-export function filterFavorite(mediaItems, filter) {
+export function filterFavorite(mediaItems: MediaItem[], filter: Filter) {
   log('Filtering favorites');
   if (filter.favorite === 'true') {
     mediaItems = mediaItems.filter((item) => item?.isFavorite !== false);
@@ -90,7 +92,7 @@ export function filterFavorite(mediaItems, filter) {
   return mediaItems;
 }
 
-export function filterOwned(mediaItems, filter) {
+export function filterOwned(mediaItems: MediaItem[], filter: Filter) {
   log('Filtering owned');
   if (filter.owned === 'true') {
     mediaItems = mediaItems.filter((item) => item?.isOwned !== false);
@@ -101,7 +103,7 @@ export function filterOwned(mediaItems, filter) {
   return mediaItems;
 }
 
-export function filterByUploadStatus(mediaItems, filter) {
+export function filterByUploadStatus(mediaItems: MediaItem[], filter: Filter) {
   log('Filtering by upload status');
   if (filter.uploadStatus === 'full') {
     mediaItems = mediaItems.filter((item) => item?.isPartialUpload === false);
@@ -113,7 +115,7 @@ export function filterByUploadStatus(mediaItems, filter) {
   return mediaItems;
 }
 
-export function filterArchived(mediaItems, filter) {
+export function filterArchived(mediaItems: MediaItem[], filter: Filter) {
   log('Filtering archived');
   if (filter.archived === 'true') {
     mediaItems = mediaItems.filter((item) => item?.isArchived !== false);
@@ -126,7 +128,7 @@ export function filterArchived(mediaItems, filter) {
 }
 
 // Process images in batches with yield points
-async function processBatch(items, processFn, batchSize = 5, core) {
+async function processBatch(items: MediaItem[], processFn: (item: MediaItem) => Promise<any>, batchSize = 5, core: Core) {
   const results = [];
   for (let i = 0; i < items.length; i += batchSize) {
     if (!core.isProcessRunning) return results;
@@ -147,7 +149,7 @@ async function processBatch(items, processFn, batchSize = 5, core) {
 
 // This being a usersctipt prevents it from using web workers
 // dHash implementation with non-blocking behavior
-async function generateImageHash(hashSize, blob, core) {
+async function generateImageHash(hashSize: number, blob: Blob, core: Core) {
   if (!blob) return null;
   if (!core.isProcessRunning) return null;
 
@@ -170,6 +172,11 @@ async function generateImageHash(hashSize, blob, core) {
 
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
+
+  if (!ctx) {
+    URL.revokeObjectURL(url);
+    return null;
+  }
 
   canvas.width = hashSize + 1;
   canvas.height = hashSize;
@@ -198,8 +205,8 @@ async function generateImageHash(hashSize, blob, core) {
         const nextPos = (y * (hashSize + 1) + x + 1) * 4;
 
         // Convert to grayscale
-        const gray1 = (pixels[pos] + pixels[pos + 1] + pixels[pos + 2]) / 3;
-        const gray2 = (pixels[nextPos] + pixels[nextPos + 1] + pixels[nextPos + 2]) / 3;
+        const gray1 = (pixels[pos] as number + (pixels[pos + 1] as number) + (pixels[pos + 2] as number)) / 3;
+        const gray2 = (pixels[nextPos] as number + (pixels[nextPos + 1] as number) + (pixels[nextPos + 2] as number)) / 3;
 
         // Set bit if left pixel is brighter than right pixel
         if (gray1 > gray2) {
@@ -212,7 +219,7 @@ async function generateImageHash(hashSize, blob, core) {
   });
 }
 
-function hammingDistance(hash1, hash2) {
+function hammingDistance(hash1: bigint | null, hash2: bigint | null): number {
   if (hash1 === null || hash2 === null) return Infinity;
 
   let xor = hash1 ^ hash2;
@@ -226,7 +233,7 @@ function hammingDistance(hash1, hash2) {
   return distance;
 }
 
-async function groupSimilarImages(imageHashes, similarityThreshold, hashSize = 8, core) {
+async function groupSimilarImages(imageHashes: { hash: bigint | null }[], similarityThreshold: number, hashSize = 8, core: Core) {
   const groups = [];
 
   // Process in small batches to prevent UI blocking
@@ -239,8 +246,8 @@ async function groupSimilarImages(imageHashes, similarityThreshold, hashSize = 8
       for (const group of groups) {
         if (!core.isProcessRunning) return groups;
 
-        const groupHash = group[0].hash;
-        const distance = hammingDistance(image.hash, groupHash);
+        const groupHash = (group[0])?.hash;
+        const distance = hammingDistance(image.hash, groupHash || null);
 
         // Max distance for a 8x8 hash is 64
         const maxPossibleDistance = hashSize * hashSize;
@@ -266,8 +273,8 @@ async function groupSimilarImages(imageHashes, similarityThreshold, hashSize = 8
 }
 
 // Fetch image blobs with concurrency control
-async function fetchImageBlobs(mediaItems, maxConcurrency, imageHeight, core) {
-  const fetchWithLimit = async (item, retries = 3) => {
+async function fetchImageBlobs(mediaItems: MediaItem[], maxConcurrency: number, imageHeight: number, core: Core) {
+  const fetchWithLimit = async (item: MediaItem, retries = 3) => {
     for (let attempt = 1; attempt <= retries; attempt++) {
       if (!core.isProcessRunning) return null;
 
@@ -286,17 +293,17 @@ async function fetchImageBlobs(mediaItems, maxConcurrency, imageHeight, core) {
         return { ...item, blob };
       } catch (error) {
         if (attempt < retries) {
-          log(`Attempt ${attempt} failed for ${item.mediaKey} (${error.message}). Retrying...`, 'error');
+          log(`Attempt ${attempt} failed for ${item.mediaKey} (${(error as Error).message}). Retrying...`, 'error');
           await new Promise((resolve) => setTimeout(resolve, 1000 * attempt)); // backoff
         } else {
-          log(`Failed to fetch thumb ${item.mediaKey} after ${retries} attempts. Final error: ${error.message}`, 'error');
+          log(`Failed to fetch thumb ${item.mediaKey} after ${retries} attempts. Final error: ${(error as Error).message}`, 'error');
           return null;
         }
       }
     }
   };
 
-  const results = [];
+  const results: (MediaItem | null)[] = [];
   const queue = [...mediaItems];
 
   // Process the queue with concurrency control
@@ -318,7 +325,7 @@ async function fetchImageBlobs(mediaItems, maxConcurrency, imageHeight, core) {
 }
 
 // Calculate an appropriate hash size based on image height
-function calculateHashSize(imageHeight) {
+function calculateHashSize(imageHeight: number): number {
   // Base hash size on the square root of the height
   // This provides a reasonable scaling factor
   const baseSize = Math.max(8, Math.floor(Math.sqrt(imageHeight) / 4));
@@ -329,7 +336,7 @@ function calculateHashSize(imageHeight) {
 }
 
 // Main function to filter similar media items
-export async function filterSimilar(core, mediaItems, filter) {
+export async function filterSimilar(core: Core, mediaItems: MediaItem[], filter: Filter) {
   const maxConcurrentFetches = 50;
   const similarityThreshold = filter.similarityThreshold;
   const imageHeight = filter.imageHeight;

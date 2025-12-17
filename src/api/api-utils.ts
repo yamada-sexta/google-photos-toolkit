@@ -49,6 +49,17 @@ import type { MediaItem } from '../gptk-core';
 //     }
 // } 
 
+// const album = {
+//       title: targetAlbumName,
+//       shared: false,
+//       mediaKey: await this.api.createAlbum(targetAlbumName),
+//     }
+export interface Album {
+  mediaKey: string;
+  title: string;
+  isShared?: boolean;
+}
+
 export default class ApiUtils {
   api: Api;
   core: Core | null
@@ -227,7 +238,7 @@ export default class ApiUtils {
     await this.executeWithConcurrency(this.api.setFavorite, this.operationSize, dedupKeyArray, false);
   }
 
-  async addToExistingAlbum(mediaItems: MediaItem[], targetAlbum: any, preserveOrder = false) {
+  async addToExistingAlbum(mediaItems: MediaItem[], targetAlbum: Album, preserveOrder = false) {
     log(`Adding ${mediaItems.length} items to album "${targetAlbum.title}"`);
     const mediaKeyArray = mediaItems.map((item) => item.mediaKey);
 
