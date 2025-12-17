@@ -9,7 +9,7 @@
       "*://photos.google.com/*"
     ],
     "icon": "https://raw.githubusercontent.com/xob0t/Google-Photos-Toolkit/main/media/icon.png",
-    "downloadURL": "https://github.com/xob0t/Google-Photos-Toolkit/releases/latest/download/google_photos_toolkit.user.js",
+    "downloadURL": "https://github.com/yamada-sexta/Google-Photos-Toolkit/releases/latest/download/google_photos_toolkit.user.js",
     "run-at": "body",
     "grant": [
       "GM_registerMenuCommand",
@@ -19,8 +19,8 @@
   },
   "main": "google_photos_toolkit.user.js",
   "scripts": {
-    "build": "rollup -c",
-    "watch": "rollup -c -w"
+    "build": "node build/esbuild.mjs",
+    "watch": "node build/esbuild.mjs --watch"
   },
   "keywords": [],
   "author": "xob0t",
@@ -30,10 +30,7 @@
   },
   "homepage": "https://github.com/xob0t/Google-Photos-Toolkit#readme",
   "devDependencies": {
-    "@rollup/plugin-replace": "^5.0.5",
-    "@rollup/pluginutils": "^5.1.0",
-    "eslint": "^8.56.0",
-    "rollup": "^4.9.6",
-    "rollup-plugin-banner2": "^1.2.2"
+    "esbuild": "^0.24.0",
+    "eslint": "^8.56.0"
   }
 }
