@@ -1,5 +1,5 @@
 import { addAlbums } from './album-selects-update.js';
-import saveToStorage from '../../utils/saveToStorage.js';
+import saveToStorage from '../../utils/saveToStorage';
 import log from './log.ts';
 import { apiUtils } from '../../globals.js';
 import { updateUI } from './update-state.js';

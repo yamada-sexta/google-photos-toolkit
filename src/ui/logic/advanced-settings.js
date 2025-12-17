@@ -1,4 +1,4 @@
-import saveToStorage from '../../utils/saveToStorage.js';
+import saveToStorage from '../../utils/saveToStorage';
 import getFromStorage from '../../utils/getFromStorage.js';
 import log from './log.ts';
 import { apiSettingsDefault } from '../../api/api-utils-default-presets.js';
