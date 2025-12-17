@@ -301,14 +301,14 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function lockedFolderPage(data: Array<any>) {
+  function lockedFolderPage(data: Array<any>): LockedFolderPage {
     return {
       nextPageId: data?.[0],
-      items: data?.[1]?.map((itemData: any) => lockedFolderItemParse(itemData)),
+      items: data?.[1]?.map((itemData: Array<any>) => lockedFolderItemParse(itemData)),
     };
   }
 
-  function linkParse(itemData: Array<any>) {
+  function linkParse(itemData: Array<any>): LinkItem {
     return {
       mediaKey: itemData?.[6],
       linkId: itemData?.[17],
@@ -316,14 +316,14 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function linksPage(data: Array<any>) {
+  function linksPage(data: Array<any>): LinksPage {
     return {
-      items: data?.[0]?.map((itemData: any) => linkParse(itemData)),
+      items: data?.[0]?.map((itemData: Array<any>) => linkParse(itemData)),
       nextPageId: data?.[1],
     };
   }
 
-  function albumParse(itemData: Array<any>) {
+  function albumParse(itemData: Array<any>): Album {
     return {
       mediaKey: itemData?.[0],
       ownerActorId: itemData?.[6]?.[0],
@@ -337,14 +337,14 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function albumsPage(data: Array<any>) {
+  function albumsPage(data: Array<any>): AlbumsPage {
     return {
       items: data?.[0]?.map((itemData: Array<any>) => albumParse(itemData)),
       nextPageId: data?.[1],
     };
   }
 
-  function partnerSharedItemParse(itemData: Array<any>) {
+  function partnerSharedItemParse(itemData: Array<any>): PartnerSharedItem {
     return {
       mediaKey: itemData?.[0],
       thumb: itemData?.[1]?.[0],
@@ -361,7 +361,7 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function albumItemParse(itemData: Array<any>) {
+  function albumItemParse(itemData: Array<any>): AlbumItem {
     return {
       mediaKey: itemData?.[0],
       thumb: itemData?.[1]?.[0],
@@ -377,7 +377,7 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function trashItemParse(itemData: Array<any>) {
+  function trashItemParse(itemData: Array<any>): TrashItem {
     return {
       mediaKey: itemData?.[0],
       thumb: itemData?.[1]?.[0],
@@ -391,7 +391,7 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function actorParse(data: Array<any>) {
+  function actorParse(data: Array<any>): Actor {
     return {
       actorId: data?.[0],
       gaiaId: data?.[1],
@@ -401,7 +401,7 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function partnerSharedItemsPage(data: Array<any>) {
+  function partnerSharedItemsPage(data: Array<any>): PartnerSharedItemsPage {
     return {
       nextPageId: data?.[0],
       items: data?.[1]?.map((itemData: Array<any>) => partnerSharedItemParse(itemData)),
@@ -411,7 +411,7 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function albumItemsPage(data: Array<any>) {
+  function albumItemsPage(data: Array<any>): AlbumItemsPage {
     return {
       items: data?.[1]?.map((itemData: Array<any>) => albumItemParse(itemData)),
       nextPageId: data?.[2],
@@ -429,14 +429,14 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function trashPage(data: Array<any>) {
+  function trashPage(data: Array<any>): TrashPage {
     return {
       items: data?.[0].map((itemData: Array<any>) => trashItemParse(itemData)),
       nextPageId: data?.[1],
     };
   }
 
-  function itemBulkMediaInfoParse(itemData: Array<any>) {
+  function itemBulkMediaInfoParse(itemData: Array<any>): BulkMediaInfo {
     return {
       mediaKey: itemData?.[0],
       descriptionFull: itemData?.[1]?.[2],
@@ -451,7 +451,7 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function itemInfoExtParse(itemData: Array<any>) {
+  function itemInfoExtParse(itemData: Array<any>): ItemInfoExt {
     const source = [];
 
     const sourceMap = {
@@ -462,14 +462,14 @@ export default function parser(data: Array<any>, rpcid: string) {
       7: 'drive',
       8: 'pc',
       11: 'gmail',
-    };
+    } as const;
 
     source[0] = itemData[0]?.[27]?.[0] ? sourceMap[itemData[0][27][0] as keyof typeof sourceMap] : null;
 
     const sourceMapSecondary = {
       1: 'android',
       3: 'ios',
-    };
+    } as const;
 
     source[1] = itemData[0]?.[27]?.[1]?.[2] ? sourceMapSecondary[itemData[0][27][1][2] as keyof typeof sourceMapSecondary] : null;
 
@@ -508,7 +508,7 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function itemInfoParse(itemData: Array<any>) {
+  function itemInfoParse(itemData: Array<any>): ItemInfo {
     return {
       mediaKey: itemData[0]?.[0],
       dedupKey: itemData[0]?.[3],
@@ -536,11 +536,11 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function bulkMediaInfo(data: Array<any>) {
+  function bulkMediaInfo(data: Array<any>): BulkMediaInfo[] {
     return data.map((itemData: Array<any>) => itemBulkMediaInfoParse(itemData));
   }
 
-  function downloadTokenCheckParse(data: Array<any>) {
+  function downloadTokenCheckParse(data: Array<any>): DownloadTokenCheck {
     return {
       fileName: data?.[0]?.[0]?.[0]?.[2]?.[0]?.[0],
       downloadUrl: data?.[0]?.[0]?.[0]?.[2]?.[0]?.[1],
@@ -549,7 +549,7 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function storageQuotaParse(data: Array<any>) {
+  function storageQuotaParse(data: Array<any>): StorageQuota {
     return {
       totalUsed: data?.[6]?.[0],
       totalAvailable: data?.[6]?.[1],
@@ -557,7 +557,7 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function remoteMatchParse(itemData: Array<any>) {
+  function remoteMatchParse(itemData: Array<any>): RemoteMatch {
     return {
       hash: itemData?.[0],
       mediaKey: itemData?.[1]?.[0],
@@ -573,7 +573,7 @@ export default function parser(data: Array<any>, rpcid: string) {
     };
   }
 
-  function remoteMatchesParse(data: Array<any>) {
+  function remoteMatchesParse(data: Array<any>): RemoteMatch[] {
     return data[0].map((itemData: Array<any>) => remoteMatchParse(itemData));
   }
 
