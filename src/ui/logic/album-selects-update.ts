@@ -1,6 +1,14 @@
 import { updateUI } from './update-state';
-export function addAlbums(albums) {
-  function addAlbumsAsOptions(albums, albumSelects, addEmpty = false) {
+
+type Album = {
+  itemCount: string | number;
+  mediaKey: string;
+  title: string;
+  isShared?: boolean;
+};
+
+export function addAlbums(albums: Album[]): void {
+  function addAlbumsAsOptions(albums: Album[] | undefined, albumSelects: HTMLSelectElement[], addEmpty = false): void {
     for (const albumSelect of albumSelects) {
       if (!albums?.length) {
         const option = document.createElement('option');
@@ -10,7 +18,7 @@ export function addAlbums(albums) {
         continue;
       }
       for (const album of albums) {
-        if (parseInt(album.itemCount) === 0 && !addEmpty) continue;
+        if (parseInt(String(album.itemCount)) === 0 && !addEmpty) continue;
         const option = document.createElement('option');
         option.value = album.mediaKey;
         option.title = `Name: ${album.title}\nItems: ${album.itemCount}`;
@@ -20,7 +28,7 @@ export function addAlbums(albums) {
       }
     }
   }
-  function emptySelects(albumSelects) {
+  function emptySelects(albumSelects: HTMLSelectElement[]): void {
     for (const albumSelect of albumSelects) {
       while (albumSelect.options.length > 0) {
         albumSelect.remove(0);
@@ -28,9 +36,13 @@ export function addAlbums(albums) {
     }
     updateUI();
   }
-  const albumSelectsMultiple = document.querySelectorAll('.albums-select[multiple]');
-  const albumSelectsSingle = document.querySelectorAll('.dropdown.albums-select');
-  const albumSelects = [...albumSelectsMultiple, ...albumSelectsSingle];
+  const albumSelectsMultiple = Array.from(
+    document.querySelectorAll<HTMLSelectElement>('.albums-select[multiple]')
+  );
+  const albumSelectsSingle = Array.from(
+    document.querySelectorAll<HTMLSelectElement>('.dropdown.albums-select')
+  );
+  const albumSelects: HTMLSelectElement[] = [...albumSelectsMultiple, ...albumSelectsSingle];
 
   emptySelects(albumSelects);
 
