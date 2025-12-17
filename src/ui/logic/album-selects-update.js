@@ -1,4 +1,4 @@
-import { updateUI } from './update-state.js';
+import { updateUI } from './update-state';
 export function addAlbums(albums) {
   function addAlbumsAsOptions(albums, albumSelects, addEmpty = false) {
     for (const albumSelect of albumSelects) {

@@ -1,14 +1,14 @@
-import { insertUi } from './insert-ui.js';
-import { updateUI } from './update-state.js';
-import log from './log.ts';
-import getFromStorage from '../../utils/getFromStorage.js';
-import { addAlbums } from './album-selects-update.js';
-import { actionsListenersSetUp } from './action-bar.js';
-import { albumSelectsControlsSetUp } from './album-selects-controls.js';
-import controlButttonsListeners from './main-control-buttons.js';
-import advancedSettingsListenersSetUp from './advanced-settings.js';
-import filterListenersSetUp from './filter-listeners.js';
-import registerMenuCommand from './register-menu-command.js';
+import { insertUi } from './insert-ui';
+import { updateUI } from './update-state';
+import log from './log';
+import getFromStorage from '../../utils/getFromStorage';
+import { addAlbums } from './album-selects-update';
+import { actionsListenersSetUp } from './action-bar';
+import { albumSelectsControlsSetUp } from './album-selects-controls';
+import controlButttonsListeners from './main-control-buttons';
+import advancedSettingsListenersSetUp from './advanced-settings';
+import filterListenersSetUp from './filter-listeners';
+import registerMenuCommand from './register-menu-command';
 
 export default async function initUI() {
   registerMenuCommand();

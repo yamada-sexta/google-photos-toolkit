@@ -1,6 +1,6 @@
 import parser from './parser.js';
 import { assertType, assertInstance } from '../utils/helpers';
-import { windowGlobalData } from '../windowGlobalData.js';
+import { windowGlobalData } from '../windowGlobalData';
 
 export default class Api {
   async makeApiRequest(rpcid, requestData) {

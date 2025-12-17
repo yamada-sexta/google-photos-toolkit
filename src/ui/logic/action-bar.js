@@ -1,10 +1,10 @@
-import { windowGlobalData } from '../../windowGlobalData.js';
-import { core } from '../../globals.js';
-import getFormData from './utils/getFormData.js';
-import { generateFilterDescription } from './filter-description-gen.js';
-import { updateUI } from './update-state.js';
-import { disableActionBar } from './utils/disable-action-bar.js';
-import getFromStorage from '../../utils/getFromStorage.js';
+import { windowGlobalData } from '../../windowGlobalData';
+import { core } from '../../globals';
+import getFormData from './utils/getFormData';
+import { generateFilterDescription } from './filter-description-gen';
+import { updateUI } from './update-state';
+import { disableActionBar } from './utils/disable-action-bar';
+import getFromStorage from '../../utils/getFromStorage';
 
 const actions = [
   {

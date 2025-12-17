@@ -1,8 +1,8 @@
 import saveToStorage from '../../utils/saveToStorage';
-import getFromStorage from '../../utils/getFromStorage.js';
+import getFromStorage from '../../utils/getFromStorage';
 import log from './log.ts';
-import { apiSettingsDefault } from '../../api/api-utils-default-presets.js';
-import getFormData from './utils/getFormData.js';
+import { apiSettingsDefault } from '../../api/api-utils-default-presets';
+import getFormData from './utils/getFormData';
 
 export default function advancedSettingsListenersSetUp() {
   function saveApiSettings(event) {

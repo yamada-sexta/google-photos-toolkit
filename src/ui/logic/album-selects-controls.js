@@ -1,9 +1,9 @@
-import { addAlbums } from './album-selects-update.js';
+import { addAlbums } from './album-selects-update';
 import saveToStorage from '../../utils/saveToStorage';
-import log from './log.ts';
-import { apiUtils } from '../../globals.js';
-import { updateUI } from './update-state.js';
-import { core } from '../../globals.js';
+import log from './log';
+import { apiUtils } from '../../globals';
+import { updateUI } from './update-state';
+import { core } from '../../globals';
 
 export function albumSelectsControlsSetUp() {
   const selectAllButtons = document.querySelectorAll('[name="selectAll"]');
