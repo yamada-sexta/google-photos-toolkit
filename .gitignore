@@ -67,7 +67,7 @@ google_photos_toolkit.user.js
 /test.ts
 /test.zig
 /testdir
-build
+# build
 build.ninja
 bun-binary
 bun-mimalloc
@@ -199,3 +199,5 @@ scripts/lldb-inline
 
 # We regenerate these in all the build scripts
 cmake/sources/*.txt
+tsconfig.browser.tsbuildinfo
+tsconfig.bun.tsbuildinfo
