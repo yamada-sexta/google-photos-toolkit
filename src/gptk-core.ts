@@ -5,12 +5,12 @@ import log from './ui/logic/log';
 import * as filters from './filters';
 import { apiSettingsDefault } from './api/api-utils-default-presets';
 
-type Source = 'library' | 'search' | 'trash' | 'lockedFolder' | 'favorites' | 'sharedLinks' | 'albums';
+export type Source = 'library' | 'search' | 'trash' | 'lockedFolder' | 'favorites' | 'sharedLinks' | 'albums';
 
-type MediaItem = any;
-type Filter = any;
-type Action = any;
-type ApiSettings = typeof apiSettingsDefault;
+export type MediaItem = any;
+export type Filter = any;
+export type Action = any;
+export type ApiSettings = typeof apiSettingsDefault;
 
 interface ExecuteActionParams {
   mediaItems: MediaItem[];

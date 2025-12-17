@@ -1,4 +1,4 @@
-import log from './ui/logic/log.ts';
+import log from './ui/logic/log';
 import { defer } from './utils/helpers';
 
 export function fileNameFilter(mediaItems, filter) {
