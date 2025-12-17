@@ -4,8 +4,8 @@ import { disableActionBar } from './utils/disable-action-bar';
 import { core } from '../../globals';
 
 export function updateUI() {
-  function toggleVisibility(element, toggle) {
-    const allDescendants = element.querySelectorAll('*');
+  function toggleVisibility(element: HTMLElement, toggle: boolean) {
+    const allDescendants = <NodeListOf<HTMLElement & { disabled: boolean }>>element.querySelectorAll('*');
     if (toggle) {
       element.style.display = 'block';
       for (const node of allDescendants) node.disabled = false;
@@ -16,7 +16,7 @@ export function updateUI() {
   }
 
   async function filterPreviewUpdate() {
-    const previewElement = document.querySelector('.filter-preview span');
+    const previewElement = <HTMLSpanElement>document.querySelector('.filter-preview span')!;
     try {
       const description = generateFilterDescription(getFormData('.filters-form'));
       previewElement.innerText = description;
@@ -25,47 +25,47 @@ export function updateUI() {
     }
   }
 
-  function isActiveTab(tabName) {
-    return document.querySelector('input[name="source"]:checked').id === tabName;
+  function isActiveTab(tabName: string) {
+    return (<HTMLInputElement>document.querySelector('input[name="source"]:checked')!).id === tabName;
   }
 
   function lockedFolderTabState() {
-    const lockedFolderTab = document.getElementById('lockedFolder');
+    const lockedFolderTab = <HTMLInputElement>document.getElementById('lockedFolder')!;
     if (!window.location.href.includes('lockedfolder')) {
       lockedFolderTab.disabled = true;
-      lockedFolderTab.parentNode.title = 'To process items in the locked folder, you must open GPTK while in it';
+      lockedFolderTab.parentElement!.title = 'To process items in the locked folder, you must open GPTK while in it';
     }
   }
 
   function updateActionButtonStates() {
-    document.getElementById('unArchive').disabled = archivedExcluded;
-    document.getElementById('toFavorite').disabled = favoritesOnly || isActiveTab('favorites');
-    document.getElementById('unFavorite').disabled = favoritesExcluded;
-    document.getElementById('toArchive').disabled = archivedOnly;
-    document.getElementById('restoreTrash').disabled = !isActiveTab('trash');
-    document.getElementById('toTrash').disabled = isActiveTab('trash');
-    document.getElementById('lock').disabled = isActiveTab('lockedFolder');
-    document.getElementById('unLock').disabled = !isActiveTab('lockedFolder');
-    document.getElementById('copyDescFromOther').disabled = isActiveTab('trash');
+    (<HTMLButtonElement>document.getElementById('unArchive')!).disabled = archivedExcluded;
+    (<HTMLButtonElement>document.getElementById('toFavorite')!).disabled = favoritesOnly || isActiveTab('favorites');
+    (<HTMLButtonElement>document.getElementById('unFavorite')!).disabled = favoritesExcluded;
+    (<HTMLButtonElement>document.getElementById('toArchive')!).disabled = archivedOnly;
+    (<HTMLButtonElement>document.getElementById('restoreTrash')!).disabled = !isActiveTab('trash');
+    (<HTMLButtonElement>document.getElementById('toTrash')!).disabled = isActiveTab('trash');
+    (<HTMLButtonElement>document.getElementById('lock')!).disabled = isActiveTab('lockedFolder');
+    (<HTMLButtonElement>document.getElementById('unLock')!).disabled = !isActiveTab('lockedFolder');
+    (<HTMLButtonElement>document.getElementById('copyDescFromOther')!).disabled = isActiveTab('trash');
   }
 
   function updateFilterVisibility() {
     const filterElements = {
-      livePhotoType: document.querySelector('.type input[value=live]').parentNode,
-      includeAlbums: document.querySelector('.include-albums'),
-      owned: document.querySelector('.owned'),
-      search: document.querySelector('.search'),
-      favorite: document.querySelector('.favorite'),
-      quality: document.querySelector('.quality'),
-      size: document.querySelector('.size'),
-      filename: document.querySelector('.filename'),
-      description: document.querySelector('.description'),
-      space: document.querySelector('.space'),
-      excludeAlbums: document.querySelector('.exclude-albums'),
-      uploadStatus: document.querySelector('.upload-status'),
-      archive: document.querySelector('.archive'),
-      excludeShared: document.querySelector('.exclude-shared'),
-      excludeFavorite: document.querySelector('.exclude-favorites'),
+      livePhotoType: <HTMLElement>document.querySelector('.type input[value=live]')!.parentElement,
+      includeAlbums: <HTMLElement>document.querySelector('.include-albums'),
+      owned: <HTMLElement>document.querySelector('.owned'),
+      search: <HTMLElement>document.querySelector('.search'),
+      favorite: <HTMLElement>document.querySelector('.favorite'),
+      quality: <HTMLElement>document.querySelector('.quality'),
+      size: <HTMLElement>document.querySelector('.size'),
+      filename: <HTMLElement>document.querySelector('.filename'),
+      description: <HTMLElement>document.querySelector('.description'),
+      space: <HTMLElement>document.querySelector('.space'),
+      excludeAlbums: <HTMLElement>document.querySelector('.exclude-albums'),
+      uploadStatus: <HTMLElement>document.querySelector('.upload-status'),
+      archive: <HTMLElement>document.querySelector('.archive'),
+      excludeShared: <HTMLElement>document.querySelector('.exclude-shared'),
+      excludeFavorite: <HTMLElement>document.querySelector('.exclude-favorites'),
     };
 
     // Default: hide all
@@ -116,9 +116,9 @@ export function updateUI() {
 
   if (core.isProcessRunning) {
     disableActionBar(true);
-    document.getElementById('stopProcess').style.display = 'block';
+    (<HTMLElement>document.getElementById('stopProcess')!).style.display = 'block';
   } else {
-    document.getElementById('stopProcess').style.display = 'none';
+    (<HTMLElement>document.getElementById('stopProcess')!).style.display = 'none';
     disableActionBar(false);
     updateActionButtonStates();
   }
