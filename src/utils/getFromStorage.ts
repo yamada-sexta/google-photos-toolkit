@@ -1,8 +1,8 @@
 import { windowGlobalData } from '../windowGlobalData.js';
 
-export default function getFromStorage(key) {
+export default function getFromStorage(key: string): any | null {
   if (typeof Storage !== 'undefined') {
-    const userStorage = JSON.parse(localStorage.getItem(windowGlobalData.account)) || {};
+    const userStorage = JSON.parse(localStorage.getItem(windowGlobalData.account) || "{}") || {};
     const storedData = userStorage[key];
 
     if (storedData) {

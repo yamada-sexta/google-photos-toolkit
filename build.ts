@@ -29,7 +29,7 @@ const bannerText = userScriptMetadataBlock();
 
 async function buildOnce() {
     await Bun.build({
-        entrypoints: ['src/index.js'],
+        entrypoints: ['src/index.ts'],
         outdir: '.',
         naming: { entry: 'google_photos_toolkit.user.[ext]' },
         format: 'iife',
