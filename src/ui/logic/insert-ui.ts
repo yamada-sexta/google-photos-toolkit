@@ -3,7 +3,7 @@ import buttonHtml from '../markup/gptk-button.html';
 import css from '../markup/style.css';
 import { updateUI } from './update-state';
 
-const version = `v${__VERSION__} (build: ${__BUILD_DATE__})`;
+const version = `v${__VERSION__} (BUILD: ${__BUILD_DATE__})`;
 const homepage = __HOMEPAGE__;
 
 function htmlTemplatePrep(template: string): string {
