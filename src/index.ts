@@ -1,2 +1,2 @@
-import initUI from "./ui/logic/gptk-ui-init";
+import initUI from './ui/logic/gptk-ui-init';
 initUI();

@@ -217,7 +217,7 @@ export default class ApiUtils {
   }
 
   async getBatchMediaInfoChunked(mediaItems) {
-    log("Getting items' media info");
+    log('Getting items\' media info');
     const mediaKeyArray = mediaItems.map((item) => item.mediaKey);
     const mediaInfoData = await this.executeWithConcurrency(this.api.getBatchMediaInfo, this.infoSize, mediaKeyArray);
     return mediaInfoData;
@@ -244,7 +244,7 @@ export default class ApiUtils {
       // ignores the description at display time.  However it *does* work to
       // add a zero-width space (U+200B) since that character is not
       // considered to be whitespace.
-      const description = itemInfoExt.other + "\u200B";
+      const description = itemInfoExt.other + '\u200B';
       await this.api.setItemDescription(item.dedupKey, description);
       return [true];
     } catch (error) {

@@ -11,71 +11,71 @@ import { windowGlobalData } from '../windowGlobalData';
 
 //         getItemsByUploadedDate(pageId?: string, parseResponse?: true): Promise<LibraryGenericPage>;
 //         getItemsByUploadedDate(pageId?: string, parseResponse: false): Promise<any>;
-        
+
 //         search(searchQuery: string, pageId?: string, parseResponse?: true): Promise<LibraryGenericPage>;
 //         search(searchQuery: string, pageId?: string, parseResponse: false): Promise<any>;
 
 //         getRemoteMatchesByHash(hashArray: string[], parseResponse?: true): Promise<RemoteMatch[]>;
 //         getRemoteMatchesByHash(hashArray: string[], parseResponse: false): Promise<any>;
-        
+
 //         getFavoriteItems(pageId?: string, parseResponse?: true): Promise<LibraryGenericPage>;
 //         getFavoriteItems(pageId?: string, parseResponse: false): Promise<any>;
-        
+
 //         getTrashItems(pageId?: string, parseResponse?: true): Promise<TrashPage>;
 //         getTrashItems(pageId?: string, parseResponse: false): Promise<any>;
-        
+
 //         getLockedFolderItems(pageId?: string, parseResponse?: true): Promise<LockedFolderPage>;
 //         getLockedFolderItems(pageId?: string, parseResponse: false): Promise<any>;
-        
+
 //         moveItemsToTrash(dedupKeyArray: string[]): Promise<any>;
 //         restoreFromTrash(dedupKeyArray: string[]): Promise<any>;
-        
+
 //         getSharedLinks(pageId?: string, parseResponse?: true): Promise<LinksPage>;
 //         getSharedLinks(pageId?: string, parseResponse: false): Promise<any>;
-        
+
 //         getAlbums(pageId?: string, pageSize?: number, parseResponse?: true): Promise<AlbumsPage>;
 //         getAlbums(pageId?: string, pageSize?: number, parseResponse: false): Promise<any>;
 
 //         getAlbumPage(albumMediaKey: string, pageId?: string, authKey?: string, parseResponse?: true): Promise<AlbumItemsPage>;
 //         getAlbumPage(albumMediaKey: string, pageId?: string, authKey?: string, parseResponse: false): Promise<any>;
-        
+
 //         removeItemsFromAlbum(itemAlbumMediaKeyArray: any[]): Promise<any>;
 //         createAlbum(albumName: string): Promise<string>;
 //         addItemsToAlbum(mediaKeyArray: string[], albumMediaKey?: string, albumName?: string): Promise<any>;
 //         addItemsToSharedAlbum(mediaKeyArray: string[], albumMediaKey?: string, albumName?: string): Promise<any>;
 //         setAlbumItemOrder(albumMediaKey: string, albumItemKeys: any[], insertAfter?: any): Promise<any>;
-        
+
 //         setFavorite(dedupKeyArray: string[], action?: boolean): Promise<any>;
 //         setArchive(dedupKeyArray: string[], action?: boolean): Promise<any>;
-        
+
 //         moveToLockedFolder(dedupKeyArray: string[]): Promise<any>;
 //         removeFromLockedFolder(dedupKeyArray: string[]): Promise<any>;
-        
+
 //         getStorageQuota(parseResponse?: true): Promise<StorageQuota>;
 //         getStorageQuota(parseResponse: false): Promise<any>;
-        
+
 //         getDownloadUrl(mediaKeyArray: string[], authKey?: string): Promise<any>;
 //         getDownloadToken(mediaKeyArray: string[]): Promise<any>;
-        
+
 //         checkDownloadToken(dlToken: string, parseResponse?: true): Promise<DownloadTokenCheck>;
 //         checkDownloadToken(dlToken: string, parseResponse: false): Promise<any>;
-        
+
 //         removeItemsFromSharedAlbum(albumMediaKey: string, mediaKeyArray: string[]): Promise<any>;
 //         saveSharedMediaToLibrary(albumMediaKey: string, mediaKeyArray: string[]): Promise<any>;
 //         savePartnerSharedMediaToLibrary(mediaKeyArray: string[]): Promise<any>;
-        
+
 //         getPartnerSharedMedia(partnerActorId: string, gaiaId: string, pageId: string, parseResponse?: true): Promise<PartnerSharedItemsPage>;
 //         getPartnerSharedMedia(partnerActorId: string, gaiaId: string, pageId: string, parseResponse: false): Promise<any>;
-        
+
 //         setItemGeoData(dedupKeyArray: string[], center: any[], visible1: any[], visible2: any[], scale: number, gMapsPlaceId: string): Promise<any>;
 //         deleteItemGeoData(dedupKeyArray: string[]): Promise<any>;
-        
+
 //         setItemTimestamp(dedupKey: string, timestamp: number, timezone: number): Promise<any>;
 //         setItemDescription(dedupKey: string, description: string): Promise<any>;
-        
+
 //         getItemInfo(mediaKey: string, albumMediaKey?: string, authKey?: string, parseResponse?: true): Promise<ItemInfo>;
 //         getItemInfo(mediaKey: string, albumMediaKey?: string, authKey?: string, parseResponse: false): Promise<any>;
-        
+
 //         getItemInfoExt(mediaKey: string, authKey?: string, parseResponse?: true): Promise<ItemInfoExt>;
 //         getItemInfoExt(mediaKey: string, authKey?: string, parseResponse: false): Promise<any>;
 
@@ -88,15 +88,22 @@ import { windowGlobalData } from '../windowGlobalData';
 
 
 export default class Api {
-  async makeApiRequest(rpcid: string, requestData) {
+  async makeApiRequest(rpcid: string, requestData: any): Promise<any> {
     // type assertion
     if (rpcid) assertType(rpcid, 'string');
 
     requestData = [[[rpcid, JSON.stringify(requestData), null, 'generic']]];
 
     const requestDataString = `f.req=${encodeURIComponent(JSON.stringify(requestData))}&at=${encodeURIComponent(windowGlobalData.at)}&`;
-
-    const params = {
+    type Param = {
+      rpcids: string;
+      'source-path': string;
+      'f.sid': string;
+      bl: string;
+      pageId: string;
+      rt: string;
+    }
+    const params: Param = {
       rpcids: rpcid,
       'source-path': window.location.pathname,
       'f.sid': windowGlobalData['f.sid'],
@@ -105,9 +112,9 @@ export default class Api {
       rt: 'c',
     };
     // if in locked folder send rapt
-    if (windowGlobalData.rapt) params.rapt = windowGlobalData.rapt;
+    if (windowGlobalData.rapt) ((params as any).rapt) = windowGlobalData.rapt;
     const paramsString = Object.keys(params)
-      .map((key) => `${key}=${encodeURIComponent(params[key])}`)
+      .map((key) => `${key}=${encodeURIComponent(params[key as keyof Param])}`)
       .join('&');
     const url = `https://photos.google.com${windowGlobalData.path}data/batchexecute?${paramsString}`;
     try {
@@ -122,7 +129,10 @@ export default class Api {
 
       const responseBody = await response.text();
       const jsonLines = responseBody.split('\n').filter((line) => line.includes('wrb.fr'));
-      let parsedData = JSON.parse(jsonLines[0]);
+      if (jsonLines.length === 0) {
+        throw new Error(`No valid response for rpcid ${rpcid}`);
+      }
+      let parsedData = JSON.parse(jsonLines[0] as string);
       return JSON.parse(parsedData[0][2]);
     } catch (error) {
       console.error(`Error in ${rpcid} request:`, error);
@@ -130,7 +140,9 @@ export default class Api {
     }
   }
 
-  async getItemsByTakenDate(timestamp = null, source = null, pageId = null, pageSize = 500, parseResponse = true) {
+  async getItemsByTakenDate(timestamp: number | null = null,
+    source: string | number | null = null, pageId: string | null = null,
+    pageSize: number = 500, parseResponse: boolean = true) {
     // type assertion
     if (timestamp) assertType(timestamp, 'number');
     if (source) assertType(source, 'string');
@@ -155,7 +167,7 @@ export default class Api {
     }
   }
 
-  async getItemsByUploadedDate(pageId = null, parseResponse = true) {
+  async getItemsByUploadedDate(pageId: string | null = null, parseResponse: boolean = true) {
     // type assertion
     if (pageId) assertType(pageId, 'string');
     if (parseResponse) assertType(parseResponse, 'boolean');
@@ -172,7 +184,7 @@ export default class Api {
     }
   }
 
-  async search(searchQuery, pageId = null, parseResponse = true) {
+  async search(searchQuery: string, pageId: string | null = null, parseResponse: boolean = true) {
     // type assertion
     if (searchQuery) assertType(searchQuery, 'string');
     if (pageId) assertType(pageId, 'string');
@@ -190,7 +202,7 @@ export default class Api {
     }
   }
 
-  async getRemoteMatchesByHash(hashArray, parseResponse = true) {
+  async getRemoteMatchesByHash(hashArray: string[], parseResponse: boolean = true) {
     // each hash is a base64-encoded binary SHA1 hash of a file
     // $ sha1sum "/path/to"/file" | xxd -r -p | base64
 
@@ -210,7 +222,7 @@ export default class Api {
     }
   }
 
-  async getFavoriteItems(pageId = null, parseResponse = true) {
+  async getFavoriteItems(pageId: string | null = null, parseResponse: boolean = true) {
     // type assertion
     if (pageId) assertType(pageId, 'string');
     if (parseResponse) assertType(parseResponse, 'boolean');
@@ -227,7 +239,7 @@ export default class Api {
     }
   }
 
-  async getTrashItems(pageId = null, parseResponse = true) {
+  async getTrashItems(pageId: string | null = null, parseResponse: boolean = true) {
     // type assertion
     if (pageId) assertType(pageId, 'string');
     if (parseResponse) assertType(parseResponse, 'boolean');
@@ -244,7 +256,7 @@ export default class Api {
     }
   }
 
-  async getLockedFolderItems(pageId = null, parseResponse = true) {
+  async getLockedFolderItems(pageId: string | null = null, parseResponse: boolean = true) {
     // type assertion
     if (pageId) assertType(pageId, 'string');
     if (parseResponse) assertType(parseResponse, 'boolean');
@@ -261,7 +273,7 @@ export default class Api {
     }
   }
 
-  async moveItemsToTrash(dedupKeyArray) {
+  async moveItemsToTrash(dedupKeyArray: string[]) {
     // type assertion
     if (dedupKeyArray) assertInstance(dedupKeyArray, Array);
 
@@ -277,7 +289,7 @@ export default class Api {
     }
   }
 
-  async restoreFromTrash(dedupKeyArray) {
+  async restoreFromTrash(dedupKeyArray: string[]) {
     // type assertion
     if (dedupKeyArray) assertInstance(dedupKeyArray, Array);
 
@@ -292,7 +304,7 @@ export default class Api {
     }
   }
 
-  async getSharedLinks(pageId = null, parseResponse = true) {
+  async getSharedLinks(pageId: string | null = null, parseResponse: boolean = true) {
     // type assertion
     if (pageId) assertType(pageId, 'string');
     if (parseResponse) assertType(parseResponse, 'boolean');
@@ -309,7 +321,7 @@ export default class Api {
     }
   }
 
-  async getAlbums(pageId = null, pageSize = 100, parseResponse = true) {
+  async getAlbums(pageId: string | null = null, pageSize: number = 100, parseResponse: boolean = true) {
     // type assertion
     if (pageId) assertType(pageId, 'string');
     if (pageSize) assertType(pageSize, 'number');
@@ -327,7 +339,7 @@ export default class Api {
     }
   }
 
-  async getAlbumPage(albumMediaKey, pageId = null, authKey = null, parseResponse = true) {
+  async getAlbumPage(albumMediaKey: string, pageId: string | null = null, authKey: string | null = null, parseResponse: boolean = true) {
     // get items of an album or a shared link with the given id
 
     // type assertion
@@ -348,7 +360,7 @@ export default class Api {
     }
   }
 
-  async removeItemsFromAlbum(itemAlbumMediaKeyArray) {
+  async removeItemsFromAlbum(itemAlbumMediaKeyArray: string[]) {
     // regular mediaKey's won't cut it, you need to get them from an album
 
     // type assertion
@@ -365,7 +377,7 @@ export default class Api {
     }
   }
 
-  async createAlbum(albumName) {
+  async createAlbum(albumName: string) {
     // returns string id of the created album
 
     // type assertion
@@ -382,7 +394,7 @@ export default class Api {
     }
   }
 
-  async addItemsToAlbum(mediaKeyArray, albumMediaKey = null, albumName = null) {
+  async addItemsToAlbum(mediaKeyArray: string[], albumMediaKey: string | null = null, albumName: string | null = null) {
     // supply album ID for adding to an existing album, or a name for a new one
 
     // type assertion
@@ -405,7 +417,7 @@ export default class Api {
     }
   }
 
-  async addItemsToSharedAlbum(mediaKeyArray, albumMediaKey = null, albumName = null) {
+  async addItemsToSharedAlbum(mediaKeyArray: string[], albumMediaKey: string | null = null, albumName: string | null = null) {
     // supply album ID for adding to an existing album, or a name for a new one
 
     // type assertion

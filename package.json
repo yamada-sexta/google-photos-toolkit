@@ -21,7 +21,8 @@
   "scripts": {
     "build": "bun run build.ts",
     "watch": "bun run build.ts --watch",
-    "dev": "bun run build.ts --dev"
+    "dev": "bun run build.ts --dev",
+    "lint": "eslint . --ext .ts"
   },
   "keywords": [],
   "author": "xob0t",
