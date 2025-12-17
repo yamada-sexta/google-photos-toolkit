@@ -1,11 +1,257 @@
-export default function parser(data, rpcid) {
+export interface GeoLocation {
+  coordinates?: any[];
+  name?: string;
+  mapThumb?: any;
+}
+
+export interface Actor {
+  actorId?: string;
+  gaiaId?: string;
+  name?: string;
+  gender?: string;
+  profiePhotoUrl?: string;
+}
+
+export interface LibraryItem {
+  mediaKey: string;
+  timestamp: number;
+  timezoneOffset: number;
+  creationTimestamp: number;
+  dedupKey: string;
+  thumb: string;
+  resWidth: number;
+  resHeight: number;
+  isPartialUpload: boolean;
+  isArchived?: boolean;
+  isFavorite?: boolean;
+  duration?: number;
+  descriptionShort?: string;
+  isLivePhoto: boolean;
+  livePhotoDuration?: number;
+  isOwned: boolean;
+  geoLocation: GeoLocation;
+}
+
+export interface LibraryTimelinePage {
+  items: LibraryItem[];
+  nextPageId?: string;
+  lastItemTimestamp: number;
+}
+
+export interface LibraryGenericPage {
+  items: LibraryItem[];
+  nextPageId?: string;
+}
+
+export interface LockedFolderItem {
+  mediaKey: string;
+  timestamp: number;
+  creationTimestamp: number;
+  dedupKey: string;
+  duration?: number;
+}
+
+export interface LockedFolderPage {
+  nextPageId?: string;
+  items: LockedFolderItem[];
+}
+
+export interface LinkItem {
+  mediaKey: string;
+  linkId: string;
+  itemCount: number;
+}
+
+export interface LinksPage {
+  items: LinkItem[];
+  nextPageId?: string;
+}
+
+export interface Album {
+  mediaKey: string;
+  ownerActorId?: string;
+  title?: string;
+  thumb?: string;
+  itemCount?: number;
+  creationTimestamp?: number;
+  modifiedTimestamp?: number;
+  timestampRange?: [number, number];
+  isShared: boolean;
+}
+
+export interface AlbumsPage {
+  items: Album[];
+  nextPageId?: string;
+}
+
+export interface PartnerSharedItem {
+  mediaKey: string;
+  thumb: string;
+  resWidth: number;
+  resHeight: number;
+  timestamp: number;
+  timezoneOffset: number;
+  creationTimestamp: number;
+  dedupKey: string;
+  saved: boolean;
+  isLivePhoto: boolean;
+  livePhotoDuration?: number;
+  duration?: number;
+}
+
+export interface AlbumItem {
+  mediaKey: string;
+  thumb: string;
+  resWidth: number;
+  resHeight: number;
+  timestamp: number;
+  timezoneOffset: number;
+  creationTimestamp: number;
+  dedupKey: string;
+  isLivePhoto: boolean;
+  livePhotoDuration?: number;
+  duration?: number;
+}
+
+export interface TrashItem {
+  mediaKey: string;
+  thumb: string;
+  resWidth: number;
+  resHeight: number;
+  timestamp: number;
+  timezoneOffset: number;
+  creationTimestamp: number;
+  dedupKey: string;
+  duration?: number;
+}
+
+export interface PartnerSharedItemsPage {
+  nextPageId?: string;
+  items: PartnerSharedItem[];
+  members: Actor[];
+  parnterActorId: string;
+  gaiaId: string;
+}
+
+export interface AlbumItemsPage {
+  items: AlbumItem[];
+  nextPageId?: string;
+  mediaKey: string;
+  title: string;
+  owner: Actor;
+  startTimestamp: number;
+  endTimestamp: number;
+  lastActivityTimestamp: number;
+  creationTimestamp: number;
+  newestOperationTimestamp: number;
+  itemCount: number;
+  authKey?: string;
+  members: Actor[];
+}
+
+export interface TrashPage {
+  items: TrashItem[];
+  nextPageId?: string;
+}
+
+export interface BulkMediaInfo {
+  mediaKey: string;
+  descriptionFull?: string;
+  fileName?: string;
+  timestamp?: number;
+  timezoneOffset?: number;
+  creationTimestamp?: number;
+  size?: number;
+  takesUpSpace?: boolean | null;
+  spaceTaken?: number;
+  isOriginalQuality?: boolean | null;
+}
+
+export interface ItemInfoExt {
+  mediaKey: string;
+  dedupKey?: string;
+  descriptionFull?: string;
+  fileName?: string;
+  timestamp?: number;
+  timezoneOffset?: number;
+  size?: number;
+  resWidth?: number;
+  resHeight?: number;
+  cameraInfo?: any;
+  albums?: Album[];
+  source: (string | null)[];
+  takesUpSpace?: boolean | null;
+  spaceTaken?: number;
+  isOriginalQuality?: boolean | null;
+  savedToYourPhotos?: boolean;
+  owner?: Actor;
+  geoLocation: GeoLocation;
+  other?: any;
+}
+
+export interface ItemInfo {
+  mediaKey: string;
+  dedupKey?: string;
+  resWidth?: number;
+  resHeight?: number;
+  isPartialUpload?: boolean;
+  timestamp?: number;
+  timezoneOffset?: number;
+  creationTimestamp?: number;
+  downloadUrl?: string;
+  downloadOriginalUrl?: string;
+  savedToYourPhotos?: boolean;
+  isArchived?: boolean;
+  takesUpSpace?: boolean | null;
+  spaceTaken?: number;
+  isOriginalQuality?: boolean | null;
+  isFavorite?: boolean;
+  duration?: number;
+  isLivePhoto: boolean;
+  livePhotoDuration?: number;
+  livePhotoVideoDownloadUrl?: string;
+  trashTimestamp?: number;
+  descriptionFull?: string;
+  thumb?: string;
+}
+
+export interface DownloadTokenCheck {
+  fileName?: string;
+  downloadUrl?: string;
+  downloadSize?: number;
+  unzippedSize?: number;
+}
+
+export interface StorageQuota {
+  totalUsed: number;
+  totalAvailable: number;
+  usedByGPhotos: number;
+}
+
+export interface RemoteMatch {
+  hash: string;
+  mediaKey: string;
+  thumb: string;
+  resWidth: number;
+  resHeight: number;
+  timestamp: number;
+  dedupKey: string;
+  timezoneOffset: number;
+  creationTimestamp: number;
+  duration?: number;
+  cameraInfo?: any;
+}
+
+
+
+export default function parser(data: Array<any>, rpcid: string) {
   /* notes
 
   add =w417-h174-k-no?authuser=0 to thumbnail url to set custon size, remove 'video' watermark, remove auth requirement
 
   */
 
-  function libraryItemParse(itemData) {
+  function libraryItemParse(itemData: Array<any>): LibraryItem {
     return {
       mediaKey: itemData?.[0],
       timestamp: itemData?.[2],
@@ -22,7 +268,7 @@ export default function parser(data, rpcid) {
       descriptionShort: itemData?.at(-1)?.[396644657]?.[0],
       isLivePhoto: itemData?.at(-1)?.[146008172] ? true : false,
       livePhotoDuration: itemData?.at(-1)?.[146008172]?.[1],
-      isOwned: itemData[7]?.filter((subArray) => subArray.includes(27)).length === 0,
+      isOwned: itemData[7]?.filter((subArray: number[]) => subArray.includes(27)).length === 0,
       geoLocation: {
         coordinates: itemData?.at(-1)?.[129168200]?.[1]?.[0],
         name: itemData?.at(-1)?.[129168200]?.[1]?.[4]?.[0]?.[1]?.[0]?.[0],
@@ -30,22 +276,22 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function libraryTimelinePage(data) {
+  function libraryTimelinePage(data: Array<any>): LibraryTimelinePage {
     return {
-      items: data?.[0]?.map((itemData) => libraryItemParse(itemData)),
+      items: data?.[0]?.map((itemData: any) => libraryItemParse(itemData)),
       nextPageId: data?.[1],
       lastItemTimestamp: parseInt(data?.[2]),
     };
   }
 
-  function libraryGenericPage(data) {
+  function libraryGenericPage(data: Array<any>): LibraryGenericPage {
     return {
-      items: data?.[0]?.map((itemData) => libraryItemParse(itemData)),
+      items: data?.[0]?.map((itemData: any) => libraryItemParse(itemData)),
       nextPageId: data?.[1],
     };
   }
 
-  function lockedFolderItemParse(itemData) {
+  function lockedFolderItemParse(itemData: Array<any>) {
     return {
       mediaKey: itemData?.[0],
       timestamp: itemData?.[2],
@@ -55,14 +301,14 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function lockedFolderPage(data) {
+  function lockedFolderPage(data: Array<any>) {
     return {
       nextPageId: data?.[0],
-      items: data?.[1]?.map((itemData) => lockedFolderItemParse(itemData)),
+      items: data?.[1]?.map((itemData: any) => lockedFolderItemParse(itemData)),
     };
   }
 
-  function linkParse(itemData) {
+  function linkParse(itemData: Array<any>) {
     return {
       mediaKey: itemData?.[6],
       linkId: itemData?.[17],
@@ -70,14 +316,14 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function linksPage(data) {
+  function linksPage(data: Array<any>) {
     return {
-      items: data?.[0]?.map((itemData) => linkParse(itemData)),
+      items: data?.[0]?.map((itemData: any) => linkParse(itemData)),
       nextPageId: data?.[1],
     };
   }
 
-  function albumParse(itemData) {
+  function albumParse(itemData: Array<any>) {
     return {
       mediaKey: itemData?.[0],
       ownerActorId: itemData?.[6]?.[0],
@@ -91,14 +337,14 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function albumsPage(data) {
+  function albumsPage(data: Array<any>) {
     return {
-      items: data?.[0]?.map((itemData) => albumParse(itemData)),
+      items: data?.[0]?.map((itemData: Array<any>) => albumParse(itemData)),
       nextPageId: data?.[1],
     };
   }
 
-  function partnerSharedItemParse(itemData) {
+  function partnerSharedItemParse(itemData: Array<any>) {
     return {
       mediaKey: itemData?.[0],
       thumb: itemData?.[1]?.[0],
@@ -115,7 +361,7 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function albumItemParse(itemData) {
+  function albumItemParse(itemData: Array<any>) {
     return {
       mediaKey: itemData?.[0],
       thumb: itemData?.[1]?.[0],
@@ -131,7 +377,7 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function trashItemParse(itemData) {
+  function trashItemParse(itemData: Array<any>) {
     return {
       mediaKey: itemData?.[0],
       thumb: itemData?.[1]?.[0],
@@ -145,7 +391,7 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function actorParse(data) {
+  function actorParse(data: Array<any>) {
     return {
       actorId: data?.[0],
       gaiaId: data?.[1],
@@ -155,19 +401,19 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function partnerSharedItemsPage(data) {
+  function partnerSharedItemsPage(data: Array<any>) {
     return {
       nextPageId: data?.[0],
-      items: data?.[1]?.map((itemData) => partnerSharedItemParse(itemData)),
-      members: data?.[2]?.map((itemData) => actorParse(itemData)),
+      items: data?.[1]?.map((itemData: Array<any>) => partnerSharedItemParse(itemData)),
+      members: data?.[2]?.map((itemData: Array<any>) => actorParse(itemData)),
       parnterActorId: data?.[4],
       gaiaId: data?.[5],
     };
   }
 
-  function albumItemsPage(data) {
+  function albumItemsPage(data: Array<any>) {
     return {
-      items: data?.[1]?.map((itemData) => albumItemParse(itemData)),
+      items: data?.[1]?.map((itemData: Array<any>) => albumItemParse(itemData)),
       nextPageId: data?.[2],
       mediaKey: data?.[3][0],
       title: data?.[3][1],
@@ -179,18 +425,18 @@ export default function parser(data, rpcid) {
       newestOperationTimestamp: data?.[3][2][9],
       itemCount: data?.[3][21],
       authKey: data?.[3][19],
-      members: data?.[3][9]?.map((itemData) => actorParse(itemData)),
+      members: data?.[3][9]?.map((itemData: Array<any>) => actorParse(itemData)),
     };
   }
 
-  function trashPage(data) {
+  function trashPage(data: Array<any>) {
     return {
-      items: data?.[0].map((itemData) => trashItemParse(itemData)),
+      items: data?.[0].map((itemData: Array<any>) => trashItemParse(itemData)),
       nextPageId: data?.[1],
     };
   }
 
-  function itemBulkMediaInfoParse(itemData) {
+  function itemBulkMediaInfoParse(itemData: Array<any>) {
     return {
       mediaKey: itemData?.[0],
       descriptionFull: itemData?.[1]?.[2],
@@ -205,7 +451,7 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function itemInfoExtParse(itemData) {
+  function itemInfoExtParse(itemData: Array<any>) {
     const source = [];
 
     const sourceMap = {
@@ -218,14 +464,14 @@ export default function parser(data, rpcid) {
       11: 'gmail',
     };
 
-    source[0] = itemData[0]?.[27]?.[0] ? sourceMap[itemData[0][27][0]] : null;
+    source[0] = itemData[0]?.[27]?.[0] ? sourceMap[itemData[0][27][0] as keyof typeof sourceMap] : null;
 
     const sourceMapSecondary = {
       1: 'android',
       3: 'ios',
     };
 
-    source[1] = itemData[0]?.[27]?.[1]?.[2] ? sourceMapSecondary[itemData[0][27][1][2]] : null;
+    source[1] = itemData[0]?.[27]?.[1]?.[2] ? sourceMapSecondary[itemData[0][27][1][2] as keyof typeof sourceMapSecondary] : null;
 
     let owner = null;
     if (itemData[0]?.[27]?.length > 0) {
@@ -246,12 +492,12 @@ export default function parser(data, rpcid) {
       resWidth: itemData[0]?.[6],
       resHeight: itemData[0]?.[7],
       cameraInfo: itemData[0]?.[23],
-      albums: itemData[0]?.[19]?.map((itemData) => albumParse(itemData)),
+      albums: itemData[0]?.[19]?.map((itemData: Array<any>) => albumParse(itemData)),
       source: source,
       takesUpSpace: itemData[0]?.[30]?.[0] === undefined ? null : itemData[0]?.[30]?.[0] === 1,
       spaceTaken: itemData[0]?.[30]?.[1],
       isOriginalQuality: itemData[0]?.[30]?.[2] === undefined ? null : itemData[0][30][2] === 2,
-      savedToYourPhotos: itemData[0]?.[12].filter((subArray) => subArray.includes(20)).length === 0,
+      savedToYourPhotos: itemData[0]?.[12].filter((subArray: Array<any>) => subArray.includes(20)).length === 0,
       owner: owner,
       geoLocation: {
         coordinates: itemData[0]?.[9]?.[0] || itemData[0]?.[13]?.[0],
@@ -262,7 +508,7 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function itemInfoParse(itemData) {
+  function itemInfoParse(itemData: Array<any>) {
     return {
       mediaKey: itemData[0]?.[0],
       dedupKey: itemData[0]?.[3],
@@ -290,11 +536,11 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function bulkMediaInfo(data) {
-    return data.map((itemData) => itemBulkMediaInfoParse(itemData));
+  function bulkMediaInfo(data: Array<any>) {
+    return data.map((itemData: Array<any>) => itemBulkMediaInfoParse(itemData));
   }
 
-  function downloadTokenCheckParse(data) {
+  function downloadTokenCheckParse(data: Array<any>) {
     return {
       fileName: data?.[0]?.[0]?.[0]?.[2]?.[0]?.[0],
       downloadUrl: data?.[0]?.[0]?.[0]?.[2]?.[0]?.[1],
@@ -303,7 +549,7 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function storageQuotaParse(data) {
+  function storageQuotaParse(data: Array<any>) {
     return {
       totalUsed: data?.[6]?.[0],
       totalAvailable: data?.[6]?.[1],
@@ -311,7 +557,7 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function remoteMatchParse(itemData) {
+  function remoteMatchParse(itemData: Array<any>) {
     return {
       hash: itemData?.[0],
       mediaKey: itemData?.[1]?.[0],
@@ -327,8 +573,8 @@ export default function parser(data, rpcid) {
     };
   }
 
-  function remoteMatchesParse(data) {
-    return data[0].map((itemData) => remoteMatchParse(itemData));
+  function remoteMatchesParse(data: Array<any>) {
+    return data[0].map((itemData: Array<any>) => remoteMatchParse(itemData));
   }
 
   if (!data?.length) return null;
