@@ -1,7 +1,7 @@
 import fs, { watch } from 'fs';
 import path from 'path';
 import type { BunPlugin } from 'bun';
-import userScriptMetadataBlock from './build/metadata.ts';
+import userScriptMetadataBlock from './build/metadata';
 
 const loadJSON = (p: string) => JSON.parse(fs.readFileSync(p, 'utf8'));
 const pkg = loadJSON(path.resolve('./package.json'));

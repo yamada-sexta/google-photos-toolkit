@@ -1,13 +1,7 @@
-import fs from 'fs';
 
-type ManifestValue = string | string[];
-type Manifest = Record<string, ManifestValue>;
+type Manifest = Record<string, string | string[]>;
 
-const loadJSON = <T>(relPath: string): T => {
-  return JSON.parse(
-    fs.readFileSync(new URL(relPath, import.meta.url), 'utf8')
-  );
-};
+import data from "../package.json";
 
 function generateComment(manifest: Manifest): string {
   const keys = Object.keys(manifest);
@@ -25,31 +19,18 @@ function generateComment(manifest: Manifest): string {
   return ['// ==UserScript==', lines, '// ==/UserScript==', ''].join('\n');
 }
 
-interface PackageJSON {
-  nameFull: string;
-  description: string;
-  version: string;
-  author: string;
-  homepage: string;
-  bugs: { url: string };
-  userScript: Record<string, ManifestValue>;
-  license: string;
-}
-
 export default function userScriptMetadataBlock(): string {
-  const pkg = loadJSON<PackageJSON>('../package.json');
-
-  const metadata: Manifest = {
-    name: pkg.nameFull,
-    description: pkg.description,
-    version: pkg.version,
-    author: pkg.author,
-    homepageURL: pkg.homepage,
-    supportURL: pkg.bugs.url,
-    match: pkg.userScript.match as ManifestValue,
-    license: pkg.license,
-    ...pkg.userScript,
-  };
+  const metadata = {
+    name: data.nameFull,
+    description: data.description,
+    version: data.version,
+    author: data.author,
+    homepageURL: data.homepage,
+    supportURL: data.bugs.url,
+    // match: data.userScript.match,
+    license: data.license,
+    ...data.userScript,
+  } as const;
 
   return generateComment(metadata);
 }
