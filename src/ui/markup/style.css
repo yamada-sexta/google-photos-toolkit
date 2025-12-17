@@ -196,7 +196,7 @@
         }
 
         .header-text {
-            font-family: Consolas, Liberation Mono, Menlo, Courier, monospace;
+            font-family: "Google Sans Text","Google Sans",Roboto,Arial,sans-serif;
             font-size: 1.3rem;
             font-weight: 500;
         }
