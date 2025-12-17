@@ -422,7 +422,7 @@ export default class Core {
     if (action.elementId === 'unLock' || source === 'lockedFolder') await this.apiUtils.removeFromLockedFolder(mediaItems);
     if (action.elementId === 'lock') await this.apiUtils.moveToLockedFolder(mediaItems);
     if (action.elementId === 'toExistingAlbum') await this.apiUtils.addToExistingAlbum(mediaItems, targetAlbum, preserveOrder);
-    if (action.elementId === 'toNewAlbum') await this.apiUtils.addToNewAlbum(mediaItems, newTargetAlbumName, preserveOrder);
+    if (action.elementId === 'toNewAlbum') await this.apiUtils.addToNewAlbum(mediaItems, newTargetAlbumName||"New Album", preserveOrder);
     if (action.elementId === 'toTrash') await this.apiUtils.moveToTrash(mediaItems);
     if (action.elementId === 'toArchive') await this.apiUtils.sendToArchive(mediaItems);
     if (action.elementId === 'unArchive') await this.apiUtils.unArchive(mediaItems);
