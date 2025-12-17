@@ -1,5 +1,5 @@
 import parser from './parser.js';
-import { assertType, assertInstance } from '../utils/helpers.js';
+import { assertType, assertInstance } from '../utils/helpers';
 import { windowGlobalData } from '../windowGlobalData.js';
 
 export default class Api {

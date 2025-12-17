@@ -1,4 +1,4 @@
-import { dateToHHMMSS } from '../../utils/helpers.js';
+import { dateToHHMMSS } from '../../utils/helpers';
 
 export default function log(logMessage: string, type: string | null = null) {
   const logPrefix = '[GPTK]';
