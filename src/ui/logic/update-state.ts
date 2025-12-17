@@ -2,6 +2,7 @@ import { generateFilterDescription } from './filter-description-gen';
 import getFormData from './utils/getFormData';
 import { disableActionBar } from './utils/disable-action-bar';
 import { core } from '../../globals';
+import type { Filter } from '../../gptk-core';
 
 export function updateUI() {
   function toggleVisibility(element: HTMLElement, toggle: boolean) {
@@ -18,7 +19,7 @@ export function updateUI() {
   async function filterPreviewUpdate() {
     const previewElement = <HTMLSpanElement>document.querySelector('.filter-preview span')!;
     try {
-      const description = generateFilterDescription(getFormData('.filters-form'));
+      const description = generateFilterDescription((getFormData('.filters-form') as any) as Filter);
       previewElement.innerText = description;
     } catch {
       previewElement.innerText = 'Failed to generate description';

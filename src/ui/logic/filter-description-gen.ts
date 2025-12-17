@@ -1,4 +1,6 @@
-export function generateFilterDescription(filter) {
+import type { Filter } from "../../gptk-core";
+
+export function generateFilterDescription(filter: Filter): string {
   // date check
   if (filter.lowerBoundaryDate >= filter.higherBoundaryDate) return 'Error: Invalid Date Interval';
   // size check
@@ -81,7 +83,7 @@ export function generateFilterDescription(filter) {
     }
   }
 
-  if (filter.sortBySize) descriptionParts.push('sorted by size');
+  if (filter.sortBySize === 'true') descriptionParts.push('sorted by size');
 
   let filterDescriptionString = descriptionParts.join(' ');
   if (filterDescriptionString == 'Filter: All media') filterDescriptionString = 'Filter: None';

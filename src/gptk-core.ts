@@ -29,12 +29,12 @@ export interface Filter {
   intervalType: 'include' | 'exclude';
   albumsInclude?: string[] | string;
   albumsExclude: string[];
-  excludeShared?: boolean;
+  excludeShared?: StringBool;
   owned?: StringBool;
   uploadStatus?: 'full' | 'partial' | 'failed';
   archived?: StringBool;
   favorite?: StringBool;
-  excludeFavorites?: boolean;
+  excludeFavorites?: StringBool;
   type?: 'video' | 'image' | 'live';
   space?: 'consuming' | 'non-consuming';
   quality?: 'original' | 'storage-saver';
@@ -44,7 +44,7 @@ export interface Filter {
   fileNameRegex: string;
   descriptionRegex: string;
   descriptionMatchType?: 'include' | 'exclude';
-  sortBySize?: boolean;
+  sortBySize?: StringBool;
   similarityThreshold: number;
   searchQuery: string;
   imageHeight: number;
