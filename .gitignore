@@ -2,5 +2,5 @@
 google_photos_toolkit.user.js
 
 /node_modules
-/dist
-/build
+# /dist
+# /build
